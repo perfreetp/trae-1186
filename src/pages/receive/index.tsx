@@ -1,19 +1,51 @@
-import React from 'react';
-import { View, Text, ScrollView } from '@tarojs/components';
+import React, { useState, useMemo } from 'react';
+import { View, Text, Input, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import classnames from 'classnames';
 import StatusTag from '@/components/StatusTag';
 import { useAppStore } from '@/store/useAppStore';
-import { getStatusText } from '@/utils';
+import { mockTraceNodes } from '@/data/traceRecords';
+import { getTraceNodeTypeText, getStatusText } from '@/utils';
 import styles from './index.module.scss';
+
+const statusTabs = [
+  { key: 'all', label: '全部' },
+  { key: 'pending', label: '待处理' },
+  { key: 'confirmed', label: '已确认' },
+  { key: 'rejected', label: '已拒收' }
+];
 
 const ReceivePage: React.FC = () => {
   const receiveRecords = useAppStore((s) => s.receiveRecords);
+  const exceptionReports = useAppStore((s) => s.exceptionReports);
   const updateReceiveRecord = useAppStore((s) => s.updateReceiveRecord);
   const addExceptionReport = useAppStore((s) => s.addExceptionReport);
 
-  const pendingRecords = receiveRecords.filter((r) => r.status === 'pending');
-  const otherRecords = receiveRecords.filter((r) => r.status !== 'pending');
+  const [activeTab, setActiveTab] = useState('all');
+  const [searchValue, setSearchValue] = useState('');
+  const [detailId, setDetailId] = useState<string | null>(null);
+
+  const filteredRecords = useMemo(() => {
+    let records = receiveRecords;
+    if (activeTab !== 'all') {
+      records = records.filter((r) => r.status === activeTab);
+    }
+    if (searchValue.trim()) {
+      const kw = searchValue.trim().toLowerCase();
+      records = records.filter(
+        (r) =>
+          r.drugName.toLowerCase().includes(kw) ||
+          r.batchNumber.toLowerCase().includes(kw)
+      );
+    }
+    return records;
+  }, [receiveRecords, activeTab, searchValue]);
+
+  const detailRecord = detailId ? receiveRecords.find((r) => r.id === detailId) : null;
+  const detailTraceNodes = detailRecord ? mockTraceNodes.filter((n) => n.drugId === detailRecord.drugId) : [];
+  const detailExceptions = detailRecord ? exceptionReports.filter(
+    (e) => e.drugId === detailRecord.drugId || e.drugName === detailRecord.drugName
+  ) : [];
 
   const handleScan = () => {
     Taro.scanCode({
@@ -72,13 +104,110 @@ const ReceivePage: React.FC = () => {
     });
   };
 
-  const progressSteps = [
-    { name: '提交收货申请', time: '2025-06-08 09:00', done: true },
-    { name: '质量验收检查', time: '2025-06-08 10:30', done: true },
-    { name: '冷链温度核对', time: '2025-06-08 11:00', done: false, active: true },
-    { name: '确认入库', time: '', done: false },
-    { name: '上架陈列', time: '', done: false }
-  ];
+  if (detailRecord) {
+    return (
+      <ScrollView scrollY className={styles.container}>
+        <View className={styles.detailHeader}>
+          <View className={styles.detailBack} onClick={() => setDetailId(null)}>
+            <Text className={styles.detailBackText}>‹ 返回</Text>
+          </View>
+          <Text className={styles.detailTitle}>收货详情</Text>
+          <View style={{ width: 100 }} />
+        </View>
+
+        <View className={styles.card}>
+          <View className={styles.detailDrugHeader}>
+            <View style={{ flex: 1 }}>
+              <Text className={styles.detailDrugName}>{detailRecord.drugName}</Text>
+              <Text className={styles.detailDrugBatch}>批号: {detailRecord.batchNumber}</Text>
+            </View>
+            <StatusTag status={detailRecord.status} text={getStatusText(detailRecord.status)} />
+          </View>
+          <View className={styles.infoGrid}>
+            <View className={styles.infoItem}>
+              <Text className={styles.infoLabel}>生产企业</Text>
+              <Text className={styles.infoValue}>{detailRecord.manufacturer}</Text>
+            </View>
+            <View className={styles.infoItem}>
+              <Text className={styles.infoLabel}>数量</Text>
+              <Text className={styles.infoValue}>{detailRecord.quantity}件</Text>
+            </View>
+            <View className={styles.infoItem}>
+              <Text className={styles.infoLabel}>操作员</Text>
+              <Text className={styles.infoValue}>{detailRecord.operator}</Text>
+            </View>
+            <View className={styles.infoItem}>
+              <Text className={styles.infoLabel}>收货日期</Text>
+              <Text className={styles.infoValue}>{detailRecord.receiveDate}</Text>
+            </View>
+          </View>
+          {detailRecord.coldChainTemp && (
+            <View className={classnames(styles.coldChainCheck, detailRecord.coldChainOk && styles.coldChainCheckOk)}>
+              <Text className={styles.coldChainIcon}>{detailRecord.coldChainOk ? '✅' : '⚠️'}</Text>
+              <Text className={classnames(styles.coldChainText, detailRecord.coldChainOk && styles.coldChainTextOk)}>
+                冷链温度: {detailRecord.coldChainTemp} {detailRecord.coldChainOk ? '(正常)' : '(异常)'}
+              </Text>
+            </View>
+          )}
+        </View>
+
+        {detailTraceNodes.length > 0 && (
+          <View className={styles.card}>
+            <Text className={styles.cardTitle}>追溯节点</Text>
+            <View className={styles.traceList}>
+              {detailTraceNodes.map((node, idx) => (
+                <View key={node.id} className={styles.traceItem}>
+                  <View className={styles.traceLeft}>
+                    <View className={styles.traceDot} />
+                    {idx < detailTraceNodes.length - 1 && <View className={styles.traceLine} />}
+                  </View>
+                  <View className={styles.traceRight}>
+                    <View className={styles.traceRow}>
+                      <Text className={styles.traceType}>{getTraceNodeTypeText(node.type)}</Text>
+                      <Text className={styles.traceTime}>{node.timestamp}</Text>
+                    </View>
+                    <Text className={styles.traceLocation}>{node.location}</Text>
+                    {node.temperature && (
+                      <Text className={styles.traceTemp}>🌡 {node.temperature}</Text>
+                    )}
+                  </View>
+                </View>
+              ))}
+            </View>
+          </View>
+        )}
+
+        {detailExceptions.length > 0 && (
+          <View className={styles.card}>
+            <Text className={styles.cardTitle}>关联异常上报</Text>
+            <View className={styles.exceptionList}>
+              {detailExceptions.map((ex) => (
+                <View key={ex.id} className={styles.exceptionItem}>
+                  <View className={styles.exceptionRow}>
+                    <Text className={styles.exceptionType}>{ex.type}</Text>
+                    <StatusTag status={ex.status} text={getStatusText(ex.status)} size="small" />
+                  </View>
+                  <Text className={styles.exceptionDesc}>{ex.description}</Text>
+                  <Text className={styles.exceptionTime}>{ex.reportTime}</Text>
+                </View>
+              ))}
+            </View>
+          </View>
+        )}
+
+        {detailRecord.status === 'pending' && (
+          <View className={styles.detailActions}>
+            <View className={classnames(styles.actionBtn, styles.btnReject)} onClick={() => handleReject(detailRecord.id)}>
+              <Text className={styles.btnRejectText}>拒收上报</Text>
+            </View>
+            <View className={classnames(styles.actionBtn, styles.btnConfirm)} onClick={() => handleConfirm(detailRecord.id)}>
+              <Text className={styles.btnConfirmText}>确认收货</Text>
+            </View>
+          </View>
+        )}
+      </ScrollView>
+    );
+  }
 
   return (
     <ScrollView scrollY className={styles.container}>
@@ -90,133 +219,92 @@ const ReceivePage: React.FC = () => {
         </View>
       </View>
 
-      {pendingRecords.length > 0 && (
-        <>
-          <Text className={styles.sectionTitle}>待处理</Text>
-          <View className={styles.receiveList}>
-            {pendingRecords.map((record) => (
-              <View
-                key={record.id}
-                className={classnames(styles.receiveCard, styles.receiveCardPending)}
-              >
-                <View className={styles.receiveHeader}>
-                  <View className={styles.receiveTitleWrap}>
-                    <Text className={styles.receiveName}>{record.drugName}</Text>
-                    <Text className={styles.receiveBatch}>批号: {record.batchNumber}</Text>
-                  </View>
-                  <StatusTag status={record.status} text={getStatusText(record.status)} size="small" />
+      <View className={styles.searchWrap}>
+        <Input
+          className={styles.searchInput}
+          placeholder="按批号或药品名筛选"
+          value={searchValue}
+          onInput={(e) => setSearchValue(e.detail.value)}
+        />
+      </View>
+
+      <View className={styles.tabRow}>
+        {statusTabs.map((tab) => (
+          <View
+            key={tab.key}
+            className={classnames(styles.tabItem, activeTab === tab.key && styles.tabItemActive)}
+            onClick={() => setActiveTab(tab.key)}
+          >
+            <Text className={classnames(styles.tabText, activeTab === tab.key && styles.tabTextActive)}>
+              {tab.label}
+            </Text>
+            {activeTab === tab.key && <View className={styles.tabIndicator} />}
+          </View>
+        ))}
+      </View>
+
+      {filteredRecords.length === 0 ? (
+        <View className={styles.emptyWrap}>
+          <Text className={styles.emptyIcon}>📦</Text>
+          <Text className={styles.emptyText}>暂无{statusTabs.find((t) => t.key === activeTab)?.label || ''}收货记录</Text>
+        </View>
+      ) : (
+        <View className={styles.receiveList}>
+          {filteredRecords.map((record) => (
+            <View
+              key={record.id}
+              className={classnames(
+                styles.receiveCard,
+                record.status === 'pending' && styles.receiveCardPending,
+                record.status === 'confirmed' && styles.receiveCardConfirmed,
+                record.status === 'rejected' && styles.receiveCardRejected
+              )}
+              onClick={() => setDetailId(record.id)}
+            >
+              <View className={styles.receiveHeader}>
+                <View className={styles.receiveTitleWrap}>
+                  <Text className={styles.receiveName}>{record.drugName}</Text>
+                  <Text className={styles.receiveBatch}>批号: {record.batchNumber}</Text>
                 </View>
-                <View className={styles.receiveBody}>
-                  <View className={styles.receiveInfoRow}>
-                    <View className={styles.receiveInfoItem}>
-                      <Text className={styles.receiveInfoLabel}>数量</Text>
-                      <Text className={styles.receiveInfoValue}>{record.quantity}件</Text>
-                    </View>
-                    <View className={styles.receiveInfoItem}>
-                      <Text className={styles.receiveInfoLabel}>生产企业</Text>
-                      <Text className={styles.receiveInfoValue}>{record.manufacturer}</Text>
-                    </View>
+                <StatusTag status={record.status} text={getStatusText(record.status)} size="small" />
+              </View>
+              <View className={styles.receiveBody}>
+                <View className={styles.receiveInfoRow}>
+                  <View className={styles.receiveInfoItem}>
+                    <Text className={styles.receiveInfoLabel}>数量</Text>
+                    <Text className={styles.receiveInfoValue}>{record.quantity}件</Text>
                   </View>
-                  {record.coldChainTemp && (
-                    <View className={classnames(styles.coldChainCheck, record.coldChainOk && styles.coldChainCheckOk)}>
-                      <Text className={styles.coldChainIcon}>
-                        {record.coldChainOk ? '✅' : '❄️'}
-                      </Text>
-                      <Text className={classnames(styles.coldChainText, record.coldChainOk && styles.coldChainTextOk)}>
-                        冷链温度: {record.coldChainTemp} {record.coldChainOk ? '(正常)' : '(异常)'}
-                      </Text>
-                    </View>
-                  )}
+                  <View className={styles.receiveInfoItem}>
+                    <Text className={styles.receiveInfoLabel}>生产企业</Text>
+                    <Text className={styles.receiveInfoValue}>{record.manufacturer}</Text>
+                  </View>
                 </View>
-                <View className={styles.receiveFooter}>
-                  <View
-                    className={classnames(styles.actionBtn, styles.btnReject)}
-                    onClick={() => handleReject(record.id)}
-                  >
+                {record.coldChainTemp && (
+                  <View className={classnames(styles.coldChainCheck, record.coldChainOk && styles.coldChainCheckOk)}>
+                    <Text className={styles.coldChainIcon}>{record.coldChainOk ? '✅' : '❄️'}</Text>
+                    <Text className={classnames(styles.coldChainText, record.coldChainOk && styles.coldChainTextOk)}>
+                      冷链温度: {record.coldChainTemp} {record.coldChainOk ? '(正常)' : '(异常)'}
+                    </Text>
+                  </View>
+                )}
+              </View>
+              {record.status === 'pending' && (
+                <View className={styles.receiveFooter} onClick={(e) => e.stopPropagation()}>
+                  <View className={classnames(styles.actionBtn, styles.btnReject)} onClick={() => handleReject(record.id)}>
                     <Text className={styles.btnRejectText}>拒收上报</Text>
                   </View>
-                  <View
-                    className={classnames(styles.actionBtn, styles.btnConfirm)}
-                    onClick={() => handleConfirm(record.id)}
-                  >
+                  <View className={classnames(styles.actionBtn, styles.btnConfirm)} onClick={() => handleConfirm(record.id)}>
                     <Text className={styles.btnConfirmText}>确认收货</Text>
                   </View>
                 </View>
-              </View>
-            ))}
-          </View>
-        </>
-      )}
-
-      {otherRecords.length > 0 && (
-        <>
-          <Text className={styles.sectionTitle}>收货记录</Text>
-          <View className={styles.receiveList}>
-            {otherRecords.map((record) => (
-              <View
-                key={record.id}
-                className={classnames(
-                  styles.receiveCard,
-                  record.status === 'confirmed' && styles.receiveCardConfirmed,
-                  record.status === 'rejected' && styles.receiveCardRejected
-                )}
-              >
-                <View className={styles.receiveHeader}>
-                  <View className={styles.receiveTitleWrap}>
-                    <Text className={styles.receiveName}>{record.drugName}</Text>
-                    <Text className={styles.receiveBatch}>批号: {record.batchNumber}</Text>
-                  </View>
-                  <StatusTag status={record.status} text={getStatusText(record.status)} size="small" />
-                </View>
-                <View className={styles.receiveBody}>
-                  <View className={styles.receiveInfoRow}>
-                    <View className={styles.receiveInfoItem}>
-                      <Text className={styles.receiveInfoLabel}>数量</Text>
-                      <Text className={styles.receiveInfoValue}>{record.quantity}件</Text>
-                    </View>
-                    <View className={styles.receiveInfoItem}>
-                      <Text className={styles.receiveInfoLabel}>收货日期</Text>
-                      <Text className={styles.receiveInfoValue}>{record.receiveDate}</Text>
-                    </View>
-                  </View>
-                  {record.coldChainTemp && (
-                    <View className={classnames(styles.coldChainCheck, record.coldChainOk && styles.coldChainCheckOk)}>
-                      <Text className={styles.coldChainIcon}>
-                        {record.coldChainOk ? '✅' : '⚠️'}
-                      </Text>
-                      <Text className={classnames(styles.coldChainText, record.coldChainOk && styles.coldChainTextOk)}>
-                        冷链温度: {record.coldChainTemp} {record.coldChainOk ? '(正常)' : '(异常)'}
-                      </Text>
-                    </View>
-                  )}
-                </View>
-              </View>
-            ))}
-          </View>
-        </>
-      )}
-
-      <Text className={styles.sectionTitle}>处理进度</Text>
-      <View className={styles.progressSection}>
-        <Text className={styles.progressTitle}>当前收货流程</Text>
-        <View className={styles.progressSteps}>
-          {progressSteps.map((step, idx) => (
-            <View key={idx} className={styles.progressStep}>
-              <View
-                className={classnames(
-                  styles.stepDot,
-                  step.done && styles.stepDotDone,
-                  step.active && styles.stepDotActive
-                )}
-              />
-              <View className={styles.stepInfo}>
-                <Text className={styles.stepName}>{step.name}</Text>
-                {step.time && <Text className={styles.stepTime}>{step.time}</Text>}
+              )}
+              <View className={styles.cardArrow}>
+                <Text className={styles.cardArrowText}>›</Text>
               </View>
             </View>
           ))}
         </View>
-      </View>
+      )}
     </ScrollView>
   );
 };

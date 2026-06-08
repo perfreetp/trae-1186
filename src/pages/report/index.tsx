@@ -26,11 +26,29 @@ const ReportPage: React.FC = () => {
   const [batchNumber, setBatchNumber] = useState('');
   const [description, setDescription] = useState('');
   const [photos, setPhotos] = useState<string[]>([]);
+  const [sourceCode, setSourceCode] = useState('');
+  const [sourceCodeType, setSourceCodeType] = useState<'regulatory' | 'package'>('regulatory');
+  const [sourceNotFound, setSourceNotFound] = useState(false);
 
   useEffect(() => {
-    const { preCode, preType } = router.params;
+    const { preCode, preType, preDrugName, preBatch, notFound } = router.params;
     if (preCode) {
-      setActiveType(preType === 'regulatory' ? 'counterfeit' : 'damaged');
+      setSourceCode(decodeURIComponent(preCode));
+    }
+    if (preType) {
+      const codeType = preType as 'regulatory' | 'package';
+      setSourceCodeType(codeType);
+      setActiveType(codeType === 'regulatory' ? 'counterfeit' : 'damaged');
+    }
+    if (preDrugName) {
+      setDrugName(decodeURIComponent(preDrugName));
+    }
+    if (preBatch) {
+      setBatchNumber(decodeURIComponent(preBatch));
+    }
+    if (notFound === '1') {
+      setSourceNotFound(true);
+      setDescription(`扫码核验失败，${preType === 'regulatory' ? '监管码' : '包装码'} ${decodeURIComponent(preCode || '')} 未在追溯数据库中查到对应药品记录，疑似假冒或渠道异常。`);
     }
   }, [router.params]);
 
@@ -54,8 +72,8 @@ const ReportPage: React.FC = () => {
   };
 
   const handleSubmit = () => {
-    if (!drugName.trim()) {
-      Taro.showToast({ title: '请输入药品名称', icon: 'none' });
+    if (!drugName.trim() && !sourceCode) {
+      Taro.showToast({ title: '请输入药品名称或扫码信息', icon: 'none' });
       return;
     }
     if (!description.trim()) {
@@ -71,7 +89,7 @@ const ReportPage: React.FC = () => {
           addExceptionReport({
             id: `ex_${Date.now()}`,
             drugId: '',
-            drugName: drugName.trim(),
+            drugName: drugName.trim() || '未知药品',
             batchNumber: batchNumber.trim() || '未填写',
             type: activeType as 'damaged' | 'counterfeit' | 'expired' | 'temperature' | 'other',
             description: description.trim(),
@@ -79,13 +97,17 @@ const ReportPage: React.FC = () => {
             reporter: '张丽',
             reportTime: now,
             status: 'submitted',
-            storeName: '国大药房朝阳路店'
-          });
+            storeName: '国大药房朝阳路店',
+            sourceCode: sourceCode || undefined,
+            sourceCodeType: sourceCode ? sourceCodeType : undefined
+          } as any);
           setDrugName('');
           setBatchNumber('');
           setDescription('');
           setPhotos([]);
           setActiveType('damaged');
+          setSourceCode('');
+          setSourceNotFound(false);
           Taro.showToast({ title: '上报成功', icon: 'success' });
         }
       }
@@ -96,6 +118,19 @@ const ReportPage: React.FC = () => {
     <ScrollView scrollY className={styles.container}>
       <View className={styles.formSection}>
         <Text className={styles.formTitle}>异常上报</Text>
+
+        {sourceCode && (
+          <View className={styles.sourceInfo}>
+            <Text className={styles.sourceLabel}>来源码信息</Text>
+            <View className={styles.sourceRow}>
+              <Text className={styles.sourceType}>{sourceCodeType === 'regulatory' ? '监管码' : '包装码'}</Text>
+              <Text className={styles.sourceCodeText}>{sourceCode}</Text>
+            </View>
+            {sourceNotFound && (
+              <Text className={styles.sourceWarning}>⚠ 该码未查到对应药品</Text>
+            )}
+          </View>
+        )}
 
         <Text className={styles.formLabel}>异常类型</Text>
         <View className={styles.typeGrid}>
@@ -190,6 +225,14 @@ const ReportPage: React.FC = () => {
                 <StatusTag status={report.status} text={getStatusText(report.status)} size="small" />
               </View>
               <Text className={styles.historyDesc}>{report.description}</Text>
+              {(report as any).sourceCode && (
+                <View className={styles.historySourceRow}>
+                  <Text className={styles.historySourceType}>
+                    {(report as any).sourceCodeType === 'regulatory' ? '监管码' : '包装码'}:
+                  </Text>
+                  <Text className={styles.historySourceCode}>{(report as any).sourceCode}</Text>
+                </View>
+              )}
               {report.images && report.images.length > 0 && (
                 <View className={styles.historyPhotoRow}>
                   {report.images.map((img, idx) => (

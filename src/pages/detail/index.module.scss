@@ -153,6 +153,19 @@
   line-height: $line-height-normal;
 }
 
+.riskBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rpx 20rpx;
+  border-radius: $radius-round;
+}
+
+.riskBadgeText {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+}
+
 .coldChainNotice {
   display: flex;
   flex-direction: row;
@@ -161,6 +174,10 @@
   border-radius: $radius-md;
   padding: $spacing-md;
   border: 2rpx solid rgba(6, 182, 212, 0.2);
+}
+
+.coldChainActionable {
+  padding-right: $spacing-sm;
 }
 
 .coldChainIcon {
@@ -178,6 +195,204 @@
   font-size: $font-size-sm;
   color: $color-text-tertiary;
   margin-top: 4rpx;
+}
+
+.coldChainActionBtn {
+  @include button-reset;
+  height: 52rpx;
+  min-width: 100rpx;
+  background-color: $color-cold-chain;
+  border-radius: $radius-round;
+  margin-left: $spacing-sm;
+  padding: 0 $spacing-md;
+  transition: all $transition-base;
+
+  &:active {
+    opacity: 0.9;
+  }
+}
+
+.coldChainActionText {
+  font-size: $font-size-sm;
+  color: $color-text-white;
+  font-weight: $font-weight-medium;
+}
+
+.recallAlert {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background: linear-gradient(135deg, $color-error-bg 0%, #fee2e2 100%);
+  border-radius: $radius-md;
+  padding: $spacing-md;
+  border: 2rpx solid rgba(239, 68, 68, 0.2);
+}
+
+.recallIcon {
+  font-size: 36rpx;
+  margin-right: $spacing-md;
+}
+
+.recallTitle {
+  font-size: $font-size-md;
+  color: $color-error;
+  font-weight: $font-weight-semibold;
+}
+
+.recallDesc {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  margin-top: 4rpx;
+}
+
+.recallActionBtn {
+  @include button-reset;
+  height: 52rpx;
+  min-width: 100rpx;
+  background-color: $color-error;
+  border-radius: $radius-round;
+  margin-left: $spacing-sm;
+  padding: 0 $spacing-md;
+  transition: all $transition-base;
+
+  &:active {
+    opacity: 0.9;
+  }
+}
+
+.recallActionText {
+  font-size: $font-size-sm;
+  color: $color-text-white;
+  font-weight: $font-weight-medium;
+}
+
+.errorAlert {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background: linear-gradient(135deg, $color-error-bg 0%, #fecaca 100%);
+  border-radius: $radius-md;
+  padding: $spacing-md;
+  border: 2rpx solid rgba(239, 68, 68, 0.3);
+}
+
+.errorAlertIcon {
+  font-size: 36rpx;
+  margin-right: $spacing-md;
+}
+
+.errorAlertTitle {
+  font-size: $font-size-md;
+  color: $color-error;
+  font-weight: $font-weight-semibold;
+}
+
+.errorAlertDesc {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  margin-top: 4rpx;
+}
+
+.errorActionBtn {
+  @include button-reset;
+  height: 52rpx;
+  min-width: 100rpx;
+  background: linear-gradient(135deg, $color-error 0%, #f87171 100%);
+  border-radius: $radius-round;
+  margin-left: $spacing-sm;
+  padding: 0 $spacing-md;
+  transition: all $transition-base;
+
+  &:active {
+    opacity: 0.9;
+  }
+}
+
+.errorActionText {
+  font-size: $font-size-sm;
+  color: $color-text-white;
+  font-weight: $font-weight-medium;
+}
+
+.riskList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.riskItem {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.riskBullet {
+  font-size: $font-size-md;
+  color: $color-error;
+  margin-right: $spacing-sm;
+  line-height: $line-height-normal;
+}
+
+.riskText {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  line-height: $line-height-normal;
+  flex: 1;
+}
+
+.stepGuideList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.stepGuideItem {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.stepGuideNum {
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: $radius-round;
+  background-color: $color-primary-bg;
+  color: $color-primary;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: $spacing-md;
+  flex-shrink: 0;
+}
+
+.stepGuideText {
+  flex: 1;
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  line-height: $line-height-normal;
+}
+
+.stepGuideBtn {
+  @include button-reset;
+  height: 48rpx;
+  min-width: 80rpx;
+  background-color: $color-primary-bg;
+  border-radius: $radius-round;
+  margin-left: $spacing-sm;
+  padding: 0 $spacing-md;
+  transition: all $transition-base;
+
+  &:active {
+    opacity: 0.9;
+  }
+}
+
+.stepGuideBtnText {
+  font-size: $font-size-xs;
+  color: $color-primary;
+  font-weight: $font-weight-medium;
 }
 
 .bottomBar {

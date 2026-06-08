@@ -15,6 +15,8 @@ const MinePage: React.FC = () => {
   const removeFavorite = useAppStore((s) => s.removeFavorite);
   const syncOfflineRecords = useAppStore((s) => s.syncOfflineRecords);
 
+  const clearAllRecords = useAppStore((s) => s.clearAllRecords);
+
   const [showExport, setShowExport] = useState(false);
   const [showCerts, setShowCerts] = useState(false);
 
@@ -74,7 +76,20 @@ const MinePage: React.FC = () => {
     { icon: '📜', label: '查验凭证', action: handleCertificate },
     { icon: '📤', label: '导出记录', action: handleExport },
     { icon: '📴', label: '离线暂存', badge: offlineQueue.length, action: handleSync },
-    { icon: '⚙️', label: '设置', action: () => {} }
+    { icon: '⚙️', label: '设置', action: () => {} },
+    { icon: '🗑️', label: '清空记录', action: () => {
+      Taro.showModal({
+        title: '确认清空',
+        content: '确定要清空所有本机记录（核验记录、收货记录、异常上报、凭证、收藏）？此操作不可撤销。',
+        confirmColor: '#ef4444',
+        success: (res) => {
+          if (res.confirm) {
+            clearAllRecords();
+            Taro.showToast({ title: '记录已清空', icon: 'success' });
+          }
+        }
+      });
+    }}
   ];
 
   return (

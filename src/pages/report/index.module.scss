@@ -21,6 +21,49 @@
   margin-bottom: $spacing-lg;
 }
 
+.sourceInfo {
+  background-color: $color-error-bg;
+  border-radius: $radius-md;
+  padding: $spacing-md;
+  margin-bottom: $spacing-lg;
+  border: 2rpx solid rgba(239, 68, 68, 0.15);
+}
+
+.sourceLabel {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $color-error;
+  margin-bottom: $spacing-xs;
+}
+
+.sourceRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+.sourceType {
+  font-size: $font-size-xs;
+  color: $color-text-white;
+  background-color: $color-error;
+  border-radius: $radius-xs;
+  padding: 2rpx 10rpx;
+}
+
+.sourceCodeText {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  font-weight: $font-weight-medium;
+  @include text-ellipsis;
+}
+
+.sourceWarning {
+  font-size: $font-size-xs;
+  color: $color-error;
+  margin-top: $spacing-xs;
+}
+
 .typeGrid {
   display: flex;
   flex-direction: row;
@@ -280,4 +323,27 @@
   font-size: $font-size-xs;
   color: $color-text-tertiary;
   margin-left: $spacing-xs;
+}
+
+.historySourceRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: $spacing-xs;
+  margin-top: $spacing-xs;
+  background-color: $color-error-bg;
+  border-radius: $radius-xs;
+  padding: 4rpx 10rpx;
+  align-self: flex-start;
+}
+
+.historySourceType {
+  font-size: $font-size-xs;
+  color: $color-error;
+  font-weight: $font-weight-medium;
+}
+
+.historySourceCode {
+  font-size: $font-size-xs;
+  color: $color-text-secondary;
 }
