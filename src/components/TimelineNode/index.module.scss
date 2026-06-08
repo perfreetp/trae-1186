@@ -1,0 +1,96 @@
+@use '@/styles/variables.scss' as *;
+
+.nodeWrap {
+  display: flex;
+  flex-direction: row;
+  min-height: 120rpx;
+}
+
+.left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 40rpx;
+  flex-shrink: 0;
+  margin-right: $spacing-md;
+}
+
+.dot {
+  width: 24rpx;
+  height: 24rpx;
+  border-radius: $radius-round;
+  background-color: $color-primary;
+  flex-shrink: 0;
+  margin-top: 8rpx;
+}
+
+.line {
+  width: 4rpx;
+  flex: 1;
+  background-color: $color-border;
+  margin-top: $spacing-xs;
+}
+
+.right {
+  flex: 1;
+  padding-bottom: $spacing-lg;
+  background-color: $color-bg-card;
+  border-radius: $radius-md;
+  padding: $spacing-md;
+  margin-bottom: $spacing-sm;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-xs;
+}
+
+.typeText {
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+}
+
+.timeText {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}
+
+.locationText {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  margin-top: $spacing-xs;
+  line-height: $line-height-normal;
+}
+
+.operatorText {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  margin-top: $spacing-xs;
+}
+
+.tempTag {
+  display: inline-flex;
+  align-items: center;
+  background-color: $color-cold-chain-bg;
+  border-radius: $radius-xs;
+  padding: 2rpx 12rpx;
+  margin-top: $spacing-xs;
+  align-self: flex-start;
+}
+
+.tempText {
+  font-size: $font-size-xs;
+  color: $color-cold-chain;
+  font-weight: $font-weight-medium;
+}
+
+.remarkText {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+  margin-top: $spacing-xs;
+  line-height: $line-height-normal;
+}

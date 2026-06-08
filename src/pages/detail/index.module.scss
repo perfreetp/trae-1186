@@ -1,0 +1,229 @@
+@use '@/styles/variables.scss' as *;
+
+.container {
+  min-height: 100vh;
+  background-color: $color-bg-page;
+  padding-bottom: 180rpx;
+}
+
+.statusBanner {
+  padding: $spacing-lg $spacing-lg $spacing-xl;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.statusIcon {
+  font-size: 56rpx;
+  margin-right: $spacing-lg;
+}
+
+.statusInfo {
+  flex: 1;
+}
+
+.statusText {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  margin-bottom: 4rpx;
+}
+
+.statusTextVerified {
+  color: $color-verified;
+}
+
+.statusTextWarning {
+  color: $color-warning;
+}
+
+.statusTextError {
+  color: $color-error;
+}
+
+.statusTextPending {
+  color: $color-primary;
+}
+
+.statusDesc {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+}
+
+.bannerVerified {
+  background: linear-gradient(135deg, $color-verified-bg 0%, #d1fae5 100%);
+}
+
+.bannerWarning {
+  background: linear-gradient(135deg, $color-warning-bg 0%, #fef3c7 100%);
+}
+
+.bannerError {
+  background: linear-gradient(135deg, $color-error-bg 0%, #fee2e2 100%);
+}
+
+.bannerPending {
+  background: linear-gradient(135deg, $color-primary-bg 0%, #dbeafe 100%);
+}
+
+.card {
+  margin: 0 $spacing-lg $spacing-md;
+  background-color: $color-bg-card;
+  border-radius: $radius-md;
+  padding: $spacing-lg;
+  box-shadow: $shadow-card;
+}
+
+.cardTitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin-bottom: $spacing-md;
+}
+
+.drugHeader {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  margin-bottom: $spacing-lg;
+}
+
+.drugImage {
+  width: 140rpx;
+  height: 140rpx;
+  border-radius: $radius-md;
+  margin-right: $spacing-lg;
+  background-color: $color-bg-page;
+}
+
+.drugHeaderInfo {
+  flex: 1;
+}
+
+.drugName {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+  margin-bottom: 4rpx;
+  @include text-ellipsis;
+}
+
+.drugGeneric {
+  font-size: $font-size-md;
+  color: $color-text-secondary;
+  margin-bottom: $spacing-xs;
+}
+
+.drugSpec {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+}
+
+.infoGrid {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: $spacing-md 0;
+}
+
+.infoItem {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  padding: $spacing-xs 0;
+  border-bottom: 2rpx solid $color-divider;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.infoLabel {
+  width: 160rpx;
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+  flex-shrink: 0;
+}
+
+.infoValue {
+  flex: 1;
+  font-size: $font-size-sm;
+  color: $color-text-primary;
+  font-weight: $font-weight-medium;
+  line-height: $line-height-normal;
+}
+
+.coldChainNotice {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: $color-cold-chain-bg;
+  border-radius: $radius-md;
+  padding: $spacing-md;
+  border: 2rpx solid rgba(6, 182, 212, 0.2);
+}
+
+.coldChainIcon {
+  font-size: 36rpx;
+  margin-right: $spacing-md;
+}
+
+.coldChainText {
+  font-size: $font-size-md;
+  color: $color-cold-chain;
+  font-weight: $font-weight-medium;
+}
+
+.coldChainDesc {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+  margin-top: 4rpx;
+}
+
+.bottomBar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: row;
+  gap: $spacing-md;
+  padding: $spacing-md $spacing-lg;
+  background-color: $color-bg-card;
+  box-shadow: 0 -2rpx 12rpx rgba(0, 0, 0, 0.06);
+  z-index: 10;
+}
+
+.bottomBtn {
+  @include button-reset;
+  flex: 1;
+  height: $button-height-lg;
+  border-radius: $radius-button;
+  transition: all $transition-base;
+
+  &:active {
+    opacity: 0.9;
+    transform: scale(0.98);
+  }
+}
+
+.btnPrimary {
+  background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+}
+
+.btnPrimaryText {
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  color: $color-text-white;
+}
+
+.btnSecondary {
+  background-color: $color-bg-page;
+  border: 2rpx solid $color-border;
+}
+
+.btnSecondaryText {
+  font-size: $font-size-md;
+  font-weight: $font-weight-medium;
+  color: $color-text-secondary;
+}

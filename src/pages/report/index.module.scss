@@ -1,0 +1,244 @@
+@use '@/styles/variables.scss' as *;
+
+.container {
+  min-height: 100vh;
+  background-color: $color-bg-page;
+  padding-bottom: $spacing-xl;
+}
+
+.formSection {
+  margin: $spacing-lg $spacing-lg 0;
+  background-color: $color-bg-card;
+  border-radius: $radius-md;
+  padding: $spacing-lg;
+  box-shadow: $shadow-card;
+}
+
+.formTitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin-bottom: $spacing-lg;
+}
+
+.typeGrid {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-lg;
+}
+
+.typeItem {
+  @include button-reset;
+  height: 64rpx;
+  min-width: 140rpx;
+  background-color: $color-bg-page;
+  border: 2rpx solid $color-border;
+  border-radius: $radius-round;
+  padding: 0 $spacing-md;
+  transition: all $transition-base;
+
+  &:active {
+    background-color: $color-bg-hover;
+  }
+}
+
+.typeItemActive {
+  background-color: $color-error-bg;
+  border-color: $color-error;
+}
+
+.typeItemText {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  white-space: nowrap;
+}
+
+.typeItemActiveText {
+  color: $color-error;
+  font-weight: $font-weight-medium;
+}
+
+.formGroup {
+  margin-bottom: $spacing-lg;
+}
+
+.formLabel {
+  font-size: $font-size-md;
+  font-weight: $font-weight-medium;
+  color: $color-text-primary;
+  margin-bottom: $spacing-sm;
+}
+
+.formInput {
+  width: 100%;
+  min-height: 72rpx;
+  background-color: $color-bg-page;
+  border-radius: $radius-md;
+  padding: $spacing-md $spacing-lg;
+  font-size: $font-size-md;
+  color: $color-text-primary;
+  box-sizing: border-box;
+}
+
+.formTextarea {
+  width: 100%;
+  min-height: 200rpx;
+  background-color: $color-bg-page;
+  border-radius: $radius-md;
+  padding: $spacing-md $spacing-lg;
+  font-size: $font-size-md;
+  color: $color-text-primary;
+  box-sizing: border-box;
+  line-height: $line-height-normal;
+}
+
+.photoSection {
+  margin-bottom: $spacing-lg;
+}
+
+.photoLabel {
+  font-size: $font-size-md;
+  font-weight: $font-weight-medium;
+  color: $color-text-primary;
+  margin-bottom: $spacing-sm;
+}
+
+.photoGrid {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: $spacing-sm;
+}
+
+.photoItem {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: $radius-md;
+  overflow: hidden;
+  background-color: $color-bg-page;
+}
+
+.photoImage {
+  width: 100%;
+  height: 100%;
+}
+
+.photoAddBtn {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: $radius-md;
+  background-color: $color-bg-page;
+  border: 2rpx dashed $color-border;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: all $transition-base;
+
+  &:active {
+    background-color: $color-bg-hover;
+  }
+}
+
+.photoAddIcon {
+  font-size: 40rpx;
+  color: $color-text-disabled;
+  margin-bottom: 4rpx;
+}
+
+.photoAddText {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}
+
+.submitBtn {
+  @include button-reset;
+  width: 100%;
+  height: $button-height-lg;
+  background: linear-gradient(135deg, $color-error 0%, #f87171 100%);
+  border-radius: $radius-button;
+  margin-top: $spacing-lg;
+  transition: all $transition-base;
+
+  &:active {
+    opacity: 0.9;
+    transform: scale(0.98);
+  }
+}
+
+.submitBtnText {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-white;
+}
+
+.historySection {
+  margin: $spacing-lg $spacing-lg 0;
+}
+
+.historyTitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin-bottom: $spacing-md;
+}
+
+.historyList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.historyCard {
+  background-color: $color-bg-card;
+  border-radius: $radius-md;
+  padding: $spacing-lg;
+  box-shadow: $shadow-card;
+}
+
+.historyHeader {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: $spacing-md;
+}
+
+.historyTitleWrap {
+  flex: 1;
+  margin-right: $spacing-sm;
+}
+
+.historyDrugName {
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  @include text-ellipsis;
+}
+
+.historyBatch {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+  margin-top: 4rpx;
+}
+
+.historyDesc {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  line-height: $line-height-normal;
+  margin-bottom: $spacing-sm;
+}
+
+.historyFooter {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.historyTime {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}

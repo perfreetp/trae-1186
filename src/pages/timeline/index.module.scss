@@ -1,0 +1,106 @@
+@use '@/styles/variables.scss' as *;
+
+.container {
+  min-height: 100vh;
+  background-color: $color-bg-page;
+  padding-bottom: $spacing-xl;
+}
+
+.drugSummary {
+  margin: $spacing-lg $spacing-lg 0;
+  background-color: $color-bg-card;
+  border-radius: $radius-md;
+  padding: $spacing-lg;
+  box-shadow: $shadow-card;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.drugImage {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: $radius-md;
+  margin-right: $spacing-lg;
+  background-color: $color-bg-page;
+}
+
+.drugInfo {
+  flex: 1;
+}
+
+.drugName {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  @include text-ellipsis;
+}
+
+.drugBatch {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+  margin-top: 4rpx;
+}
+
+.drugMeta {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-top: $spacing-xs;
+}
+
+.coldTag {
+  display: inline-flex;
+  align-items: center;
+  background-color: $color-cold-chain-bg;
+  border-radius: $radius-round;
+  padding: 2rpx 12rpx;
+  margin-right: $spacing-sm;
+}
+
+.coldTagText {
+  font-size: $font-size-xs;
+  color: $color-cold-chain;
+  font-weight: $font-weight-medium;
+}
+
+.routeSummary {
+  margin: $spacing-md $spacing-lg 0;
+  background: linear-gradient(135deg, $color-primary-bg 0%, #dbeafe 100%);
+  border-radius: $radius-md;
+  padding: $spacing-md $spacing-lg;
+  border: 2rpx solid rgba(37, 99, 235, 0.15);
+}
+
+.routeTitle {
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  color: $color-primary;
+  margin-bottom: $spacing-xs;
+}
+
+.routePath {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  line-height: $line-height-loose;
+}
+
+.timelineSection {
+  margin: $spacing-lg $spacing-lg 0;
+}
+
+.sectionTitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin-bottom: $spacing-lg;
+}
+
+.timelineList {
+  display: flex;
+  flex-direction: column;
+}
+
+.emptyWrap {
+  margin-top: 120rpx;
+}

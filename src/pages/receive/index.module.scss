@@ -1,0 +1,273 @@
+@use '@/styles/variables.scss' as *;
+
+.container {
+  min-height: 100vh;
+  background-color: $color-bg-page;
+  padding-bottom: $spacing-xl;
+}
+
+.scanEntry {
+  margin: $spacing-lg $spacing-lg 0;
+  background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+  border-radius: $radius-xl;
+  padding: $spacing-xl $spacing-lg;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  box-shadow: 0 8rpx 32rpx rgba(37, 99, 235, 0.3);
+}
+
+.scanEntryIcon {
+  font-size: 56rpx;
+  margin-right: $spacing-lg;
+}
+
+.scanEntryInfo {
+  flex: 1;
+}
+
+.scanEntryTitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-white;
+}
+
+.scanEntryDesc {
+  font-size: $font-size-sm;
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: 4rpx;
+}
+
+.sectionTitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin: $spacing-lg $spacing-lg $spacing-md;
+}
+
+.receiveList {
+  margin: 0 $spacing-lg;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.receiveCard {
+  background-color: $color-bg-card;
+  border-radius: $radius-md;
+  padding: $spacing-lg;
+  box-shadow: $shadow-card;
+  transition: all $transition-base;
+
+  &:active {
+    background-color: $color-bg-hover;
+  }
+}
+
+.receiveCardPending {
+  border-left: 8rpx solid $color-warning;
+}
+
+.receiveCardConfirmed {
+  border-left: 8rpx solid $color-verified;
+}
+
+.receiveCardRejected {
+  border-left: 8rpx solid $color-error;
+}
+
+.receiveHeader {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: $spacing-md;
+}
+
+.receiveTitleWrap {
+  flex: 1;
+  margin-right: $spacing-sm;
+}
+
+.receiveName {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  @include text-ellipsis;
+}
+
+.receiveBatch {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+  margin-top: 4rpx;
+}
+
+.receiveBody {
+  margin-bottom: $spacing-md;
+}
+
+.receiveInfoRow {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: $spacing-sm $spacing-lg;
+  margin-bottom: $spacing-sm;
+}
+
+.receiveInfoItem {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.receiveInfoLabel {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+  margin-right: $spacing-xs;
+  white-space: nowrap;
+}
+
+.receiveInfoValue {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  font-weight: $font-weight-medium;
+}
+
+.coldChainCheck {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: $color-cold-chain-bg;
+  border-radius: $radius-md;
+  padding: $spacing-md;
+  margin-top: $spacing-sm;
+  border: 2rpx solid rgba(6, 182, 212, 0.2);
+}
+
+.coldChainCheckOk {
+  background-color: $color-verified-bg;
+  border-color: rgba(16, 185, 129, 0.2);
+}
+
+.coldChainIcon {
+  font-size: 32rpx;
+  margin-right: $spacing-sm;
+}
+
+.coldChainText {
+  font-size: $font-size-sm;
+  color: $color-cold-chain;
+  font-weight: $font-weight-medium;
+}
+
+.coldChainTextOk {
+  color: $color-verified;
+}
+
+.receiveFooter {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  gap: $spacing-sm;
+  padding-top: $spacing-md;
+  border-top: 2rpx solid $color-divider;
+}
+
+.actionBtn {
+  @include button-reset;
+  height: 60rpx;
+  min-width: 140rpx;
+  border-radius: $radius-round;
+  transition: all $transition-base;
+
+  &:active {
+    opacity: 0.9;
+  }
+}
+
+.btnConfirm {
+  background-color: $color-verified;
+}
+
+.btnConfirmText {
+  font-size: $font-size-sm;
+  color: $color-text-white;
+  font-weight: $font-weight-medium;
+}
+
+.btnReject {
+  background-color: $color-bg-page;
+  border: 2rpx solid $color-border;
+}
+
+.btnRejectText {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  font-weight: $font-weight-medium;
+}
+
+.progressSection {
+  margin: $spacing-lg $spacing-lg 0;
+  background-color: $color-bg-card;
+  border-radius: $radius-md;
+  padding: $spacing-lg;
+  box-shadow: $shadow-card;
+}
+
+.progressTitle {
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin-bottom: $spacing-md;
+}
+
+.progressSteps {
+  display: flex;
+  flex-direction: column;
+}
+
+.progressStep {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  margin-bottom: $spacing-md;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.stepDot {
+  width: 24rpx;
+  height: 24rpx;
+  border-radius: $radius-round;
+  background-color: $color-border;
+  margin-right: $spacing-md;
+  margin-top: 4rpx;
+  flex-shrink: 0;
+}
+
+.stepDotActive {
+  background-color: $color-primary;
+}
+
+.stepDotDone {
+  background-color: $color-verified;
+}
+
+.stepInfo {
+  flex: 1;
+}
+
+.stepName {
+  font-size: $font-size-sm;
+  color: $color-text-primary;
+  font-weight: $font-weight-medium;
+}
+
+.stepTime {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  margin-top: 4rpx;
+}

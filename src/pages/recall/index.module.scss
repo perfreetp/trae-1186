@@ -1,0 +1,219 @@
+@use '@/styles/variables.scss' as *;
+
+.container {
+  min-height: 100vh;
+  background-color: $color-bg-page;
+  padding-bottom: $spacing-xl;
+}
+
+.statsRow {
+  display: flex;
+  flex-direction: row;
+  margin: $spacing-lg $spacing-lg 0;
+  gap: $spacing-md;
+}
+
+.statCard {
+  flex: 1;
+  background-color: $color-bg-card;
+  border-radius: $radius-md;
+  padding: $spacing-md;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: $shadow-card;
+}
+
+.statNumber {
+  font-size: $font-size-xxl;
+  font-weight: $font-weight-bold;
+  margin-bottom: 4rpx;
+}
+
+.statNumberUrgent {
+  color: $color-error;
+}
+
+.statNumberNormal {
+  color: $color-warning;
+}
+
+.statNumberDone {
+  color: $color-verified;
+}
+
+.statLabel {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}
+
+.filterRow {
+  display: flex;
+  flex-direction: row;
+  gap: $spacing-sm;
+  margin: $spacing-lg $spacing-lg 0;
+}
+
+.filterTag {
+  @include button-reset;
+  height: 60rpx;
+  min-width: 120rpx;
+  background-color: $color-bg-card;
+  border: 2rpx solid $color-border;
+  border-radius: $radius-round;
+  transition: all $transition-base;
+
+  &:active {
+    background-color: $color-bg-hover;
+  }
+}
+
+.filterTagActive {
+  background-color: $color-primary-bg;
+  border-color: $color-primary;
+}
+
+.filterTagText {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+}
+
+.filterTagActiveText {
+  color: $color-primary;
+  font-weight: $font-weight-medium;
+}
+
+.recallList {
+  margin: $spacing-lg $spacing-lg 0;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.recallCard {
+  background-color: $color-bg-card;
+  border-radius: $radius-md;
+  padding: $spacing-lg;
+  box-shadow: $shadow-card;
+  transition: all $transition-base;
+
+  &:active {
+    background-color: $color-bg-hover;
+  }
+}
+
+.recallCardUrgent {
+  border-left: 8rpx solid $color-error;
+}
+
+.recallCardNormal {
+  border-left: 8rpx solid $color-warning;
+}
+
+.recallCardLow {
+  border-left: 8rpx solid $color-primary;
+}
+
+.recallHeader {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: $spacing-md;
+}
+
+.recallTitleWrap {
+  flex: 1;
+  margin-right: $spacing-sm;
+}
+
+.recallDrugName {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  @include text-ellipsis;
+}
+
+.recallBatch {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+  margin-top: 4rpx;
+}
+
+.recallBody {
+  margin-bottom: $spacing-md;
+}
+
+.recallReason {
+  font-size: $font-size-md;
+  color: $color-text-secondary;
+  line-height: $line-height-normal;
+  margin-bottom: $spacing-md;
+}
+
+.recallInfoRow {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: $spacing-md;
+}
+
+.recallInfoItem {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.recallInfoLabel {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+  margin-right: $spacing-xs;
+  white-space: nowrap;
+}
+
+.recallInfoValue {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  font-weight: $font-weight-medium;
+}
+
+.recallFooter {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: $spacing-md;
+  border-top: 2rpx solid $color-divider;
+}
+
+.deadlineText {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+}
+
+.actionBtn {
+  @include button-reset;
+  height: 56rpx;
+  min-width: 140rpx;
+  background-color: $color-primary-bg;
+  border-radius: $radius-round;
+  transition: all $transition-base;
+
+  &:active {
+    opacity: 0.9;
+  }
+}
+
+.actionBtnUrgent {
+  background-color: $color-error-bg;
+}
+
+.actionBtnText {
+  font-size: $font-size-sm;
+  color: $color-primary;
+  font-weight: $font-weight-medium;
+}
+
+.actionBtnUrgentText {
+  color: $color-error;
+}

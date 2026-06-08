@@ -1,0 +1,267 @@
+@use '@/styles/variables.scss' as *;
+
+.container {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #dbeafe 0%, $color-bg-page 100%);
+  padding-bottom: $spacing-xl;
+}
+
+.scanSection {
+  margin: $spacing-lg $spacing-lg 0;
+  padding: $spacing-xl $spacing-lg;
+  background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+  border-radius: $radius-xl;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 8rpx 32rpx rgba(37, 99, 235, 0.3);
+}
+
+.scanIconWrap {
+  width: 140rpx;
+  height: 140rpx;
+  border-radius: $radius-round;
+  background-color: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: $spacing-lg;
+}
+
+.scanIcon {
+  font-size: 64rpx;
+}
+
+.scanTitle {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-semibold;
+  color: $color-text-white;
+  margin-bottom: $spacing-xs;
+}
+
+.scanSubtitle {
+  font-size: $font-size-sm;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: $spacing-lg;
+  text-align: center;
+  line-height: $line-height-normal;
+}
+
+.scanButtons {
+  display: flex;
+  flex-direction: row;
+  gap: $spacing-md;
+  width: 100%;
+}
+
+.scanBtn {
+  flex: 1;
+  height: $button-height-md;
+  border-radius: $radius-button;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all $transition-base;
+
+  &:active {
+    opacity: 0.9;
+    transform: scale(0.98);
+  }
+}
+
+.scanBtnPrimary {
+  background-color: $color-text-white;
+}
+
+.scanBtnPrimaryText {
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  color: $color-primary;
+}
+
+.scanBtnSecondary {
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 2rpx solid rgba(255, 255, 255, 0.5);
+}
+
+.scanBtnSecondaryText {
+  font-size: $font-size-md;
+  font-weight: $font-weight-medium;
+  color: $color-text-white;
+}
+
+.quickSection {
+  margin: $spacing-lg $spacing-lg 0;
+}
+
+.sectionHeader {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-md;
+}
+
+.sectionTitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+}
+
+.sectionMore {
+  font-size: $font-size-sm;
+  color: $color-primary;
+}
+
+.quickGrid {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: $spacing-md;
+}
+
+.quickItem {
+  width: calc(33.33% - 16rpx);
+  background-color: $color-bg-card;
+  border-radius: $radius-md;
+  padding: $spacing-md;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: $shadow-card;
+  transition: all $transition-base;
+
+  &:active {
+    opacity: 0.9;
+    transform: scale(0.98);
+  }
+}
+
+.quickIcon {
+  font-size: 44rpx;
+  margin-bottom: $spacing-xs;
+}
+
+.quickLabel {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  text-align: center;
+}
+
+.offlineBadge {
+  position: absolute;
+  top: 8rpx;
+  right: 8rpx;
+  background-color: $color-warning;
+  border-radius: $radius-round;
+  padding: 0 12rpx;
+  height: 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.offlineBadgeText {
+  font-size: 18rpx;
+  color: $color-text-white;
+}
+
+.recentSection {
+  margin: $spacing-lg $spacing-lg 0;
+}
+
+.recentList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.recentCard {
+  background-color: $color-bg-card;
+  border-radius: $radius-md;
+  padding: $spacing-md $spacing-lg;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  box-shadow: $shadow-card;
+  transition: all $transition-base;
+
+  &:active {
+    background-color: $color-bg-hover;
+  }
+}
+
+.recentInfo {
+  flex: 1;
+  margin-left: $spacing-md;
+}
+
+.recentName {
+  font-size: $font-size-md;
+  font-weight: $font-weight-medium;
+  color: $color-text-primary;
+  margin-bottom: 4rpx;
+  @include text-ellipsis;
+}
+
+.recentBatch {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+}
+
+.recentRight {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-left: $spacing-md;
+}
+
+.recentTime {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  margin-top: 4rpx;
+}
+
+.offlineTag {
+  background-color: $color-warning-bg;
+  border-radius: $radius-xs;
+  padding: 2rpx 8rpx;
+  margin-top: 4rpx;
+}
+
+.offlineTagText {
+  font-size: 18rpx;
+  color: $color-warning;
+}
+
+.coldChainCard {
+  margin: $spacing-lg $spacing-lg 0;
+  background: linear-gradient(135deg, $color-cold-chain-bg 0%, #f0fdfa 100%);
+  border-radius: $radius-md;
+  padding: $spacing-md $spacing-lg;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border: 2rpx solid rgba(6, 182, 212, 0.2);
+}
+
+.coldChainIcon {
+  font-size: 40rpx;
+  margin-right: $spacing-md;
+}
+
+.coldChainInfo {
+  flex: 1;
+}
+
+.coldChainTitle {
+  font-size: $font-size-md;
+  font-weight: $font-weight-medium;
+  color: $color-cold-chain;
+  margin-bottom: 4rpx;
+}
+
+.coldChainDesc {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+}

@@ -1,0 +1,124 @@
+@use '@/styles/variables.scss' as *;
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rpx 16rpx;
+  border-radius: $radius-sm;
+  white-space: nowrap;
+  min-width: 80rpx;
+
+  &.small {
+    padding: 2rpx 12rpx;
+    min-width: 60rpx;
+  }
+}
+
+.tagText {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  line-height: $line-height-normal;
+
+  &.smallText {
+    font-size: $font-size-xs;
+  }
+}
+
+.status_verified {
+  background-color: $color-verified-bg;
+  .tagText {
+    color: $color-verified;
+  }
+}
+
+.status_warning {
+  background-color: $color-warning-bg;
+  .tagText {
+    color: $color-warning;
+  }
+}
+
+.status_error {
+  background-color: $color-error-bg;
+  .tagText {
+    color: $color-error;
+  }
+}
+
+.status_pending {
+  background-color: $color-primary-bg;
+  .tagText {
+    color: $color-primary;
+  }
+}
+
+.status_submitted {
+  background-color: $color-primary-bg;
+  .tagText {
+    color: $color-primary;
+  }
+}
+
+.status_reviewing {
+  background-color: $color-warning-bg;
+  .tagText {
+    color: $color-warning;
+  }
+}
+
+.status_resolved {
+  background-color: $color-verified-bg;
+  .tagText {
+    color: $color-verified;
+  }
+}
+
+.status_confirmed {
+  background-color: $color-verified-bg;
+  .tagText {
+    color: $color-verified;
+  }
+}
+
+.status_rejected {
+  background-color: $color-error-bg;
+  .tagText {
+    color: $color-error;
+  }
+}
+
+.status_processing {
+  background-color: $color-warning-bg;
+  .tagText {
+    color: $color-warning;
+  }
+}
+
+.status_completed {
+  background-color: $color-verified-bg;
+  .tagText {
+    color: $color-verified;
+  }
+}
+
+.status_urgent {
+  background-color: $color-error-bg;
+  .tagText {
+    color: $color-error;
+  }
+}
+
+.status_normal {
+  background-color: $color-warning-bg;
+  .tagText {
+    color: $color-warning;
+  }
+}
+
+.status_low {
+  background-color: $color-primary-bg;
+  .tagText {
+    color: $color-primary;
+  }
+}
