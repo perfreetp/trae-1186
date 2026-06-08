@@ -3,13 +3,17 @@ import { View, Text, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import classnames from 'classnames';
 import StatusTag from '@/components/StatusTag';
-import { mockReceiveRecords } from '@/data/scanHistory';
+import { useAppStore } from '@/store/useAppStore';
 import { getStatusText } from '@/utils';
 import styles from './index.module.scss';
 
 const ReceivePage: React.FC = () => {
-  const pendingRecords = mockReceiveRecords.filter((r) => r.status === 'pending');
-  const otherRecords = mockReceiveRecords.filter((r) => r.status !== 'pending');
+  const receiveRecords = useAppStore((s) => s.receiveRecords);
+  const updateReceiveRecord = useAppStore((s) => s.updateReceiveRecord);
+  const addExceptionReport = useAppStore((s) => s.addExceptionReport);
+
+  const pendingRecords = receiveRecords.filter((r) => r.status === 'pending');
+  const otherRecords = receiveRecords.filter((r) => r.status !== 'pending');
 
   const handleScan = () => {
     Taro.scanCode({
@@ -31,6 +35,7 @@ const ReceivePage: React.FC = () => {
       content: '确认该药品已验收合格并收货？',
       success: (res) => {
         if (res.confirm) {
+          updateReceiveRecord(id, { status: 'confirmed' });
           Taro.showToast({ title: '收货确认成功', icon: 'success' });
         }
       }
@@ -38,8 +43,32 @@ const ReceivePage: React.FC = () => {
   };
 
   const handleReject = (id: string) => {
-    Taro.navigateTo({
-      url: `/pages/report/index?receiveId=${id}`
+    const record = receiveRecords.find((r) => r.id === id);
+    if (!record) return;
+    Taro.showModal({
+      title: '拒收上报',
+      content: `确认拒收"${record.drugName}"并上报异常？`,
+      success: (res) => {
+        if (res.confirm) {
+          updateReceiveRecord(id, { status: 'rejected' });
+          addExceptionReport({
+            id: `ex_${Date.now()}`,
+            drugId: record.drugId,
+            drugName: record.drugName,
+            batchNumber: record.batchNumber,
+            type: record.coldChainOk ? 'other' : 'temperature',
+            description: record.coldChainOk
+              ? `门店拒收药品"${record.drugName}"，批号${record.batchNumber}`
+              : `门店拒收冷链药品"${record.drugName}"，到货温度${record.coldChainTemp || '异常'}超出规定范围`,
+            images: [],
+            reporter: '张丽',
+            reportTime: new Date().toLocaleString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }).replace(/\//g, '-'),
+            status: 'submitted',
+            storeName: '国大药房朝阳路店'
+          });
+          Taro.showToast({ title: '已拒收并上报', icon: 'success' });
+        }
+      }
     });
   };
 

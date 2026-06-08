@@ -1,16 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import classnames from 'classnames';
 import { useAppStore } from '@/store/useAppStore';
+import { getStatusText } from '@/utils';
+import StatusTag from '@/components/StatusTag';
 import styles from './index.module.scss';
 
 const MinePage: React.FC = () => {
   const scanRecords = useAppStore((s) => s.scanRecords);
   const favorites = useAppStore((s) => s.favorites);
   const offlineQueue = useAppStore((s) => s.offlineQueue);
+  const certificates = useAppStore((s) => s.certificates);
   const removeFavorite = useAppStore((s) => s.removeFavorite);
   const syncOfflineRecords = useAppStore((s) => s.syncOfflineRecords);
+
+  const [showExport, setShowExport] = useState(false);
+  const [showCerts, setShowCerts] = useState(false);
 
   const verifiedCount = scanRecords.filter((r) => r.result === 'verified').length;
   const warningCount = scanRecords.filter((r) => r.result === 'warning').length;
@@ -32,11 +38,35 @@ const MinePage: React.FC = () => {
   };
 
   const handleExport = () => {
-    Taro.showToast({ title: '导出功能开发中', icon: 'none' });
+    setShowExport(true);
+  };
+
+  const handleExportCopy = () => {
+    const content = scanRecords
+      .map((r) => `${r.scanTime} | ${r.drugName} | 批号${r.batchNumber} | ${getStatusText(r.result)} | ${r.scanType === 'regulatory' ? '监管码' : '包装码'}${r.isOffline ? ' | 离线' : ''}`)
+      .join('\n');
+    Taro.setClipboardData({
+      data: content,
+      success: () => {
+        Taro.showToast({ title: '核验记录已复制到剪贴板', icon: 'success' });
+        setShowExport(false);
+      }
+    });
   };
 
   const handleCertificate = () => {
-    Taro.showToast({ title: '凭证功能开发中', icon: 'none' });
+    setShowCerts(true);
+  };
+
+  const handleCertClick = (certId: string) => {
+    const cert = certificates.find((c) => c.id === certId);
+    if (cert) {
+      Taro.showModal({
+        title: '查验凭证详情',
+        content: `药品: ${cert.drugName}\n批号: ${cert.batchNumber}\n核验时间: ${cert.verificationTime}\n核验结论: ${getStatusText(cert.result)}\n操作员: ${cert.operator}\n门店: ${cert.storeName}`,
+        showCancel: false
+      });
+    }
   };
 
   const menuItems = [
@@ -131,6 +161,71 @@ const MinePage: React.FC = () => {
           </View>
         ))}
       </View>
+
+      {showExport && (
+        <View className={styles.modalOverlay} onClick={() => setShowExport(false)}>
+          <View className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+            <Text className={styles.modalTitle}>导出核验记录</Text>
+            <Text className={styles.modalDesc}>
+              共{scanRecords.length}条核验记录，点击"复制到剪贴板"可将全部记录导出为文本
+            </Text>
+            <ScrollView scrollY className={styles.exportPreview}>
+              {scanRecords.slice(0, 5).map((r, idx) => (
+                <View key={idx} className={styles.exportRow}>
+                  <Text className={styles.exportText}>
+                    {r.scanTime} | {r.drugName} | 批号{r.batchNumber} | {getStatusText(r.result)}
+                  </Text>
+                </View>
+              ))}
+              {scanRecords.length > 5 && (
+                <Text className={styles.exportMore}>...还有{scanRecords.length - 5}条记录</Text>
+              )}
+            </ScrollView>
+            <View className={styles.modalActions}>
+              <View className={styles.modalCancelBtn} onClick={() => setShowExport(false)}>
+                <Text className={styles.modalCancelText}>取消</Text>
+              </View>
+              <View className={styles.modalConfirmBtn} onClick={handleExportCopy}>
+                <Text className={styles.modalConfirmText}>复制到剪贴板</Text>
+              </View>
+            </View>
+          </View>
+        </View>
+      )}
+
+      {showCerts && (
+        <View className={styles.modalOverlay} onClick={() => setShowCerts(false)}>
+          <View className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+            <Text className={styles.modalTitle}>查验凭证</Text>
+            {certificates.length === 0 ? (
+              <Text className={styles.modalDesc}>暂无查验凭证，核验药品后可生成凭证</Text>
+            ) : (
+              <ScrollView scrollY className={styles.certList}>
+                {certificates.map((cert) => (
+                  <View
+                    key={cert.id}
+                    className={styles.certCard}
+                    onClick={() => handleCertClick(cert.id)}
+                  >
+                    <View className={styles.certHeader}>
+                      <Text className={styles.certDrugName}>{cert.drugName}</Text>
+                      <StatusTag status={cert.result} text={getStatusText(cert.result)} size="small" />
+                    </View>
+                    <Text className={styles.certBatch}>批号: {cert.batchNumber}</Text>
+                    <Text className={styles.certTime}>核验时间: {cert.verificationTime}</Text>
+                    <Text className={styles.certStore}>{cert.storeName} | {cert.operator}</Text>
+                  </View>
+                ))}
+              </ScrollView>
+            )}
+            <View className={styles.modalActions}>
+              <View className={styles.modalCancelBtn} onClick={() => setShowCerts(false)}>
+                <Text className={styles.modalCancelText}>关闭</Text>
+              </View>
+            </View>
+          </View>
+        </View>
+      )}
     </ScrollView>
   );
 };

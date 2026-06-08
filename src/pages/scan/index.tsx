@@ -11,20 +11,21 @@ const ScanPage: React.FC = () => {
   const scanRecords = useAppStore((s) => s.scanRecords);
   const offlineQueue = useAppStore((s) => s.offlineQueue);
 
+  const navigateToDetail = (code: string, type: 'regulatory' | 'package') => {
+    Taro.navigateTo({
+      url: `/pages/detail/index?code=${encodeURIComponent(code)}&type=${type}`
+    });
+  };
+
   const handleScanRegulatory = () => {
     Taro.scanCode({
       scanType: ['qrCode', 'barCode'],
       success: (res) => {
         console.info('[Scan] 监管码扫描结果:', res.result);
-        Taro.navigateTo({
-          url: `/pages/detail/index?code=${encodeURIComponent(res.result)}&type=regulatory`
-        });
+        navigateToDetail(res.result, 'regulatory');
       },
       fail: (err) => {
         console.error('[Scan] 扫码失败:', err);
-        Taro.navigateTo({
-          url: `/pages/detail/index?code=81012345678901234567&type=regulatory`
-        });
       }
     });
   };
@@ -34,15 +35,10 @@ const ScanPage: React.FC = () => {
       scanType: ['qrCode', 'barCode'],
       success: (res) => {
         console.info('[Scan] 包装码扫描结果:', res.result);
-        Taro.navigateTo({
-          url: `/pages/detail/index?code=${encodeURIComponent(res.result)}&type=package`
-        });
+        navigateToDetail(res.result, 'package');
       },
       fail: (err) => {
         console.error('[Scan] 扫码失败:', err);
-        Taro.navigateTo({
-          url: `/pages/detail/index?code=6901234567890&type=package`
-        });
       }
     });
   };
@@ -54,9 +50,7 @@ const ScanPage: React.FC = () => {
       report: '/pages/report/index',
       recall: '/pages/recall/index'
     };
-    if (action === 'trace') {
-      Taro.switchTab({ url: routes[action] });
-    } else if (action === 'recall') {
+    if (action === 'trace' || action === 'recall') {
       Taro.switchTab({ url: routes[action] });
     } else if (routes[action]) {
       Taro.navigateTo({ url: routes[action] });

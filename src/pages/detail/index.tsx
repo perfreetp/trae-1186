@@ -4,26 +4,93 @@ import Taro, { useRouter } from '@tarojs/taro';
 import classnames from 'classnames';
 import StatusTag from '@/components/StatusTag';
 import { mockDrugs } from '@/data/drugs';
-import { getStatusText } from '@/utils';
+import { useAppStore } from '@/store/useAppStore';
+import { getStatusText, generateId } from '@/utils';
+import dayjs from 'dayjs';
+import type { DrugInfo } from '@/types';
 import styles from './index.module.scss';
 
 const DetailPage: React.FC = () => {
   const router = useRouter();
-  const [drug, setDrug] = useState(mockDrugs[0]);
+  const addScanRecord = useAppStore((s) => s.addScanRecord);
+  const addCertificate = useAppStore((s) => s.addCertificate);
+
+  const [drug, setDrug] = useState<DrugInfo | null>(null);
+  const [notFound, setNotFound] = useState(false);
+  const [scannedCode, setScannedCode] = useState('');
+  const [scanType, setScanType] = useState<'regulatory' | 'package'>('regulatory');
 
   useEffect(() => {
     const { drugId, code, type } = router.params;
-    let found = mockDrugs[0];
+    const searchType = (type as 'regulatory' | 'package') || 'regulatory';
+    setScanType(searchType);
+
     if (drugId) {
-      found = mockDrugs.find((d) => d.id === drugId) || mockDrugs[0];
+      const found = mockDrugs.find((d) => d.id === drugId) || null;
+      setDrug(found);
+      setNotFound(!found);
+      setScannedCode('');
     } else if (code) {
-      found = mockDrugs.find(
-        (d) => d.regulatoryCode === code || d.packageCode === code
-      ) || mockDrugs[0];
+      const decodedCode = decodeURIComponent(code);
+      setScannedCode(decodedCode);
+      const found = mockDrugs.find(
+        (d) => d.regulatoryCode === decodedCode || d.packageCode === decodedCode
+      ) || null;
+      setDrug(found);
+      setNotFound(!found);
+      if (found) {
+        const now = dayjs().format('YYYY-MM-DD HH:mm');
+        addScanRecord({
+          id: generateId(),
+          drugId: found.id,
+          drugName: found.name,
+          batchNumber: found.batchNumber,
+          scanTime: now,
+          scanType: searchType,
+          isOffline: false,
+          result: found.status === 'pending' ? 'warning' : found.status
+        });
+      }
     }
-    setDrug(found);
-    console.info('[Detail] 药品详情:', found.name);
   }, [router.params]);
+
+  const handleTimeline = () => {
+    if (drug) {
+      Taro.navigateTo({
+        url: `/pages/timeline/index?drugId=${drug.id}`
+      });
+    }
+  };
+
+  const handleCertificate = () => {
+    if (!drug) return;
+    Taro.showModal({
+      title: '生成查验凭证',
+      content: `为"${drug.name}"(批号${drug.batchNumber})生成查验凭证？`,
+      success: (res) => {
+        if (res.confirm) {
+          const now = dayjs().format('YYYY-MM-DD HH:mm');
+          addCertificate({
+            id: generateId(),
+            drugId: drug.id,
+            drugName: drug.name,
+            batchNumber: drug.batchNumber,
+            verificationTime: now,
+            result: drug.status === 'pending' ? 'warning' : drug.status,
+            operator: '张丽',
+            storeName: '国大药房朝阳路店'
+          });
+          Taro.showToast({ title: '凭证已生成', icon: 'success' });
+        }
+      }
+    });
+  };
+
+  const handleReport = () => {
+    Taro.navigateTo({
+      url: `/pages/report/index${scannedCode ? `?preCode=${encodeURIComponent(scannedCode)}&preType=${scanType}` : ''}`
+    });
+  };
 
   const statusIcons: Record<string, string> = {
     verified: '✅',
@@ -36,15 +103,82 @@ const DetailPage: React.FC = () => {
     verified: styles.bannerVerified,
     warning: styles.bannerWarning,
     error: styles.bannerError,
-    pending: styles.bannerPending
+    pending: styles.bannerPending,
+    notfound: styles.bannerError
   };
 
   const statusTextClassMap: Record<string, string> = {
     verified: styles.statusTextVerified,
     warning: styles.statusTextWarning,
     error: styles.statusTextError,
-    pending: styles.statusTextPending
+    pending: styles.statusTextPending,
+    notfound: styles.statusTextError
   };
+
+  if (notFound) {
+    return (
+      <View className={styles.container}>
+        <View className={classnames(styles.statusBanner, styles.bannerError)}>
+          <Text className={styles.statusIcon}>❌</Text>
+          <View className={styles.statusInfo}>
+            <Text className={classnames(styles.statusText, styles.statusTextError)}>
+              核验失败
+            </Text>
+            <Text className={styles.statusDesc}>
+              未查询到该码对应的药品信息，请核实码值或上报异常
+            </Text>
+          </View>
+        </View>
+
+        <View className={styles.card}>
+          <Text className={styles.cardTitle}>扫描信息</Text>
+          <View className={styles.infoGrid}>
+            <View className={styles.infoItem}>
+              <Text className={styles.infoLabel}>码类型</Text>
+              <Text className={styles.infoValue}>
+                {scanType === 'regulatory' ? '监管码' : '包装码'}
+              </Text>
+            </View>
+            <View className={styles.infoItem}>
+              <Text className={styles.infoLabel}>{scanType === 'regulatory' ? '监管码' : '包装码'}</Text>
+              <Text className={styles.infoValue}>{scannedCode || '未知'}</Text>
+            </View>
+            <View className={styles.infoItem}>
+              <Text className={styles.infoLabel}>失败原因</Text>
+              <Text className={styles.infoValue}>该码未在追溯数据库中查到对应药品记录</Text>
+            </View>
+            <View className={styles.infoItem}>
+              <Text className={styles.infoLabel}>扫描时间</Text>
+              <Text className={styles.infoValue}>{dayjs().format('YYYY-MM-DD HH:mm')}</Text>
+            </View>
+          </View>
+        </View>
+
+        <View className={styles.bottomBar}>
+          <View className={classnames(styles.bottomBtn, styles.btnSecondary)} onClick={() => Taro.navigateBack()}>
+            <Text className={styles.btnSecondaryText}>返回重扫</Text>
+          </View>
+          <View className={classnames(styles.bottomBtn, styles.btnReport)} onClick={handleReport}>
+            <Text className={styles.btnReportText}>异常上报</Text>
+          </View>
+        </View>
+      </View>
+    );
+  }
+
+  if (!drug) {
+    return (
+      <View className={styles.container}>
+        <View className={classnames(styles.statusBanner, styles.bannerPending)}>
+          <Text className={styles.statusIcon}>⏳</Text>
+          <View className={styles.statusInfo}>
+            <Text className={classnames(styles.statusText, styles.statusTextPending)}>加载中</Text>
+            <Text className={styles.statusDesc}>正在获取药品信息...</Text>
+          </View>
+        </View>
+      </View>
+    );
+  }
 
   const infoItems = [
     { label: '通用名', value: drug.genericName },
@@ -59,24 +193,6 @@ const DetailPage: React.FC = () => {
     { label: '包装码', value: drug.packageCode },
     { label: '储存条件', value: drug.storageCondition }
   ];
-
-  const handleTimeline = () => {
-    Taro.navigateTo({
-      url: `/pages/timeline/index?drugId=${drug.id}`
-    });
-  };
-
-  const handleCertificate = () => {
-    Taro.showModal({
-      title: '生成查验凭证',
-      content: `为"${drug.name}"(批号${drug.batchNumber})生成查验凭证？`,
-      success: (res) => {
-        if (res.confirm) {
-          Taro.showToast({ title: '凭证已生成', icon: 'success' });
-        }
-      }
-    });
-  };
 
   return (
     <View className={styles.container}>

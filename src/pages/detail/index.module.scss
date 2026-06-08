@@ -227,3 +227,13 @@
   font-weight: $font-weight-medium;
   color: $color-text-secondary;
 }
+
+.btnReport {
+  background: linear-gradient(135deg, $color-error 0%, #f87171 100%);
+}
+
+.btnReportText {
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  color: $color-text-white;
+}
