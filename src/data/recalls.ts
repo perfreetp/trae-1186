@@ -3,10 +3,10 @@ import type { RecallNotice } from '@/types';
 export const mockRecalls: RecallNotice[] = [
   {
     id: 'rc_001',
-    drugName: '注射用头孢曲松钠',
-    batchNumber: 'HB20240801',
-    manufacturer: '某制药股份有限公司',
-    reason: '该批次产品含量测定不符合规定，存在安全风险',
+    drugName: '布洛芬缓释胶囊',
+    batchNumber: 'SK20250410',
+    manufacturer: '中美天津史克制药有限公司',
+    reason: '该批次产品溶出度不符合规定，存在疗效降低风险',
     level: 'urgent',
     publishDate: '2025-06-01',
     deadline: '2025-06-15',

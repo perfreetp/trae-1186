@@ -68,6 +68,7 @@ export interface ReceiveRecord {
   coldChainOk: boolean;
   coldChainTemp?: string;
   status: 'pending' | 'confirmed' | 'rejected';
+  processedTime?: string;
   storeName: string;
 }
 

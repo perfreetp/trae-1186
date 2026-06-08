@@ -16,6 +16,7 @@ const MinePage: React.FC = () => {
   const syncOfflineRecords = useAppStore((s) => s.syncOfflineRecords);
 
   const clearAllRecords = useAppStore((s) => s.clearAllRecords);
+  const resetToMockData = useAppStore((s) => s.resetToMockData);
 
   const [showExport, setShowExport] = useState(false);
   const [showCerts, setShowCerts] = useState(false);
@@ -86,6 +87,18 @@ const MinePage: React.FC = () => {
           if (res.confirm) {
             clearAllRecords();
             Taro.showToast({ title: '记录已清空', icon: 'success' });
+          }
+        }
+      });
+    }},
+    { icon: '🔄', label: '重载演示数据', action: () => {
+      Taro.showModal({
+        title: '重载演示数据',
+        content: '将所有记录恢复为初始示例数据，当前数据会被覆盖，确定？',
+        success: (res) => {
+          if (res.confirm) {
+            resetToMockData();
+            Taro.showToast({ title: '演示数据已重载', icon: 'success' });
           }
         }
       });

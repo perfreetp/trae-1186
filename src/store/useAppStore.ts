@@ -14,8 +14,8 @@ const STORAGE_KEYS = {
 function loadFromStorage<T>(key: string, fallback: T[]): T[] {
   try {
     const stored = Taro.getStorageSync(key);
-    if (stored && Array.isArray(stored) && stored.length > 0) {
-      return stored as T[];
+    if (stored !== null && stored !== '' && stored !== undefined) {
+      if (Array.isArray(stored)) return stored as T[];
     }
   } catch (e) {
     console.error('[Storage] 读取失败:', key, e);
@@ -49,6 +49,7 @@ interface AppState {
   addExceptionReport: (report: ExceptionReport) => void;
   addCertificate: (cert: VerificationCertificate) => void;
   clearAllRecords: () => void;
+  resetToMockData: () => void;
 }
 
 export const useAppStore = create<AppState>((set, get) => ({
@@ -134,9 +135,27 @@ export const useAppStore = create<AppState>((set, get) => ({
     }),
 
   clearAllRecords: () => {
-    Object.values(STORAGE_KEYS).forEach((key) => {
-      try { Taro.removeStorageSync(key); } catch (e) { console.error('[Storage] 清除失败:', key, e); }
-    });
+    const empty = {
+      scanRecords: [] as ScanRecord[],
+      favorites: [] as FavoriteDrug[],
+      receiveRecords: [] as ReceiveRecord[],
+      exceptionReports: [] as ExceptionReport[],
+      certificates: [] as VerificationCertificate[]
+    };
+    saveToStorage(STORAGE_KEYS.scanRecords, empty.scanRecords);
+    saveToStorage(STORAGE_KEYS.favorites, empty.favorites);
+    saveToStorage(STORAGE_KEYS.receiveRecords, empty.receiveRecords);
+    saveToStorage(STORAGE_KEYS.exceptionReports, empty.exceptionReports);
+    saveToStorage(STORAGE_KEYS.certificates, empty.certificates);
+    set({ ...empty, offlineQueue: [] });
+  },
+
+  resetToMockData: () => {
+    saveToStorage(STORAGE_KEYS.scanRecords, mockScanRecords);
+    saveToStorage(STORAGE_KEYS.favorites, mockFavorites);
+    saveToStorage(STORAGE_KEYS.receiveRecords, mockReceiveRecords);
+    saveToStorage(STORAGE_KEYS.exceptionReports, mockExceptionReports);
+    saveToStorage(STORAGE_KEYS.certificates, mockCertificates);
     set({
       scanRecords: mockScanRecords,
       favorites: mockFavorites,

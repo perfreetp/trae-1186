@@ -62,22 +62,22 @@ const DetailPage: React.FC = () => {
     }
   }, [router.params]);
 
-  const riskLevel = useMemo(() => {
-    if (!drug) return 'none';
-    if (drug.status === 'error') return 'high';
-    if (drug.status === 'warning') return 'medium';
-    if (drug.isColdChain) return 'medium';
-    if (isRecalledBatch) return 'high';
-    if (drug.status === 'pending') return 'low';
-    return 'low';
-  }, [drug]);
-
   const isRecalledBatch = useMemo(() => {
     if (!drug) return false;
     return mockRecalls.some(
       (r) => r.drugName === drug.name && r.batchNumber === drug.batchNumber && r.status !== 'completed'
     );
   }, [drug]);
+
+  const riskLevel = useMemo(() => {
+    if (!drug) return 'none';
+    if (drug.status === 'error') return 'high';
+    if (isRecalledBatch) return 'high';
+    if (drug.status === 'warning') return 'medium';
+    if (drug.isColdChain) return 'medium';
+    if (drug.status === 'pending') return 'low';
+    return 'low';
+  }, [drug, isRecalledBatch]);
 
   const nextSteps = useMemo(() => {
     if (!drug) return [];

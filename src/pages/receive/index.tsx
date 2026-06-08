@@ -67,7 +67,8 @@ const ReceivePage: React.FC = () => {
       content: '确认该药品已验收合格并收货？',
       success: (res) => {
         if (res.confirm) {
-          updateReceiveRecord(id, { status: 'confirmed' });
+          const now = new Date().toLocaleString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }).replace(/\//g, '-');
+          updateReceiveRecord(id, { status: 'confirmed', processedTime: now });
           Taro.showToast({ title: '收货确认成功', icon: 'success' });
         }
       }
@@ -82,7 +83,8 @@ const ReceivePage: React.FC = () => {
       content: `确认拒收"${record.drugName}"并上报异常？`,
       success: (res) => {
         if (res.confirm) {
-          updateReceiveRecord(id, { status: 'rejected' });
+          const now = new Date().toLocaleString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }).replace(/\//g, '-');
+          updateReceiveRecord(id, { status: 'rejected', processedTime: now });
           addExceptionReport({
             id: `ex_${Date.now()}`,
             drugId: record.drugId,
@@ -140,6 +142,12 @@ const ReceivePage: React.FC = () => {
               <Text className={styles.infoLabel}>收货日期</Text>
               <Text className={styles.infoValue}>{detailRecord.receiveDate}</Text>
             </View>
+            {detailRecord.processedTime && (
+              <View className={styles.infoItem}>
+                <Text className={styles.infoLabel}>处理时间</Text>
+                <Text className={styles.infoValue}>{detailRecord.processedTime}</Text>
+              </View>
+            )}
           </View>
           {detailRecord.coldChainTemp && (
             <View className={classnames(styles.coldChainCheck, detailRecord.coldChainOk && styles.coldChainCheckOk)}>
